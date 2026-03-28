@@ -22,7 +22,7 @@ Built with **LangChain**, **RAG (Retrieval-Augmented Generation)**, **OpenAI** a
 
 ## Demo
 
-![Lexis AI Demo](assets/demo.gif)
+![Lexis AI Demo](assets/demo.png)
 
 ---
 
