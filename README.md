@@ -107,5 +107,5 @@ lexis-ai/
 
 ## Author
 
-Javier Aranda — Universitat Politècnica de Catalunya (UPC)
+Anna Galstyan — Universitat Politècnica de Catalunya (UPC)
 Grau en Intel·ligència Artificial, 2025–2026
