@@ -1,0 +1,4 @@
+.env
+contracts/
+__pycache__/
+*.pyc
