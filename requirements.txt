@@ -1,3 +1,4 @@
+# Python dependencies for contract analysis system
 langchain
 langchain-community
 langchain-openai
