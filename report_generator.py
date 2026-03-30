@@ -1,3 +1,4 @@
+"""Report generation module for formatting contract analysis results."""
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
