@@ -1,3 +1,4 @@
+"""Streamlit web interface for contract analysis application."""
 import streamlit as st
 import os, sys, json
 from datetime import datetime
