@@ -1,3 +1,4 @@
+# Environment and cache files
 .env
 contracts/
 __pycache__/
