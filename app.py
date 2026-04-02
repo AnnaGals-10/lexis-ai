@@ -11,6 +11,7 @@ from analyzer import ContractAnalyzer
 from report_generator import generate_report
 
 HISTORY_FILE = os.path.join(os.path.dirname(__file__), "history.json")
+CONTRACTS_DIR = os.path.join(os.path.dirname(__file__), "contracts")
 
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(page_title="Lexis — Contract Analyzer", page_icon="⚖",
@@ -202,22 +203,40 @@ with col_upload:
 if uploaded:
     # Run analysis only when a new file is uploaded
     if uploaded.name != st.session_state.last_file:
-        tmp_path = os.path.join(os.path.dirname(__file__), "contracts", "_tmp_upload.pdf")
+        # Ensure temp upload directory exists even on fresh clones.
+        os.makedirs(CONTRACTS_DIR, exist_ok=True)
+        tmp_path = os.path.join(CONTRACTS_DIR, "_tmp_upload.pdf")
         with open(tmp_path, "wb") as f:
             f.write(uploaded.read())
 
-        with st.spinner(""):
-            progress = st.progress(0, text="Loading and indexing document...")
-            analyzer = ContractAnalyzer(tmp_path)
-            progress.progress(20, text="Detecting document language...")
-            progress.progress(35, text="Generating executive summary...")
-            summary = analyzer.executive_summary()
-            progress.progress(60, text="Identifying risk clauses...")
-            flags = analyzer.detect_red_flags()
-            progress.progress(85, text="Calculating overall risk score...")
-            risk = analyzer.risk_score()
-            progress.progress(100, text="Analysis complete.")
-            progress.empty()
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+            st.error(
+                "Missing OpenAI API key. Create a .env file with OPENAI_API_KEY=your_key "
+                "(you can copy from .env.example)."
+            )
+            st.stop()
+
+        try:
+            with st.spinner(""):
+                progress = st.progress(0, text="Loading and indexing document...")
+                analyzer = ContractAnalyzer(tmp_path)
+                progress.progress(20, text="Detecting document language...")
+                progress.progress(35, text="Generating executive summary...")
+                summary = analyzer.executive_summary()
+                progress.progress(60, text="Identifying risk clauses...")
+                flags = analyzer.detect_red_flags()
+                progress.progress(85, text="Calculating overall risk score...")
+                risk = analyzer.risk_score()
+                progress.progress(100, text="Analysis complete.")
+                progress.empty()
+        except Exception as exc:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+            st.error(f"Analysis failed: {exc}")
+            st.stop()
 
         os.remove(tmp_path)
 
